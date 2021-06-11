@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <head title="Avatarize!">
+    </head>
+    <style>
+svg {
+    position:absolute;
+    top:0;
+    left:0;
+    width:360px;
+    height:360px;
+}
+#avatar {
+    position:relative;
+    margin:auto;
+    width:360px;
+    height:460px;
+}
+
+.skins,.eyes,.eyebrows,.mouths,.hairstyles,.haircolors,.facialhairs,.clothes,.fabriccolors,.backgroundcolors,.glasses,.glassopacity,.tattoos,.accesories {
+    flex: 0 0 auto;
+    top:0;
+    width:53px;
+    height:53px;
+    margin:5px;
+    border:1px solid #707070;
+    cursor:pointer;
+    border-radius:10px;
+    background-color:#ffdbb4;
+}
+.eyes,.eyebrows,.mouths,.hairstyles,.facialhairs,.clothes,.glasses,.tattoos,.accesories {
+    background-image:url(https://i.imgur.com/q0DdlUI.png);
+}
+.glassopacity {
+    text-align:center;
+    font-size:21px;
+    font-weight:bold;
+    height:43px;
+    padding-top:10px;
+    color:#707070;
+}
+    </style>
+    <script src="avatars.js" charset="utf-8"></script>
+    <script>
+
+function setAttr(e, name, val) {
+    e.forEach( x => x.setAttribute(name, val) );
+}
+function show(e) {
+    e.forEach( x => x.style.visibility = "visible" );
+}
+function hide(e) {
+    e.forEach( x => x.style.visibility = "hidden" );
+}
+function start() {
+    fetch('avatars.xml')
+        .then(async (q) => {
+            document.getElementById('avatar').innerHTML = await q.text();
+            avatar = new Avatar('#avatar');
+            avatar.fromName("test")
+        });
+}
+    </script>
+        <body onload="start()">
+            <h1>Avatarize!</h1>
+            <div>
+                <input size=100 max-size=100 type="text" onkeydown="avatar.fromName(this.value)" placeholder="enter something here"></input>
+                <button onclick="avatar.random()">Random</button>
+            </div>
+            <div id="avatar"></div>
+        </body>
+</html>

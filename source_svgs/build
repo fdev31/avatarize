@@ -1,0 +1,9 @@
+#!/bin/sh
+OUT=../site
+PY=python
+
+$PY avatarize.py > "$OUT/avatars.xml"
+T=$(mktemp _varsXXXXX.js)
+$PY genvars.py > "$T"
+cat "$T" _colors.js _avatars.js > "$OUT/avatars.js"
+rm "$T"
