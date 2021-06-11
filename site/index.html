@@ -65,7 +65,7 @@ function start() {
         <body onload="start()">
             <h1>Avatarize!</h1>
             <div>
-                <input size=100 max-size=100 type="text" onkeydown="avatar.fromName(this.value)" placeholder="enter something here"></input>
+                <input size=100 max-size=100 type="text" onkeyup="avatar.fromName(this.value)" placeholder="enter something here"></input>
                 <button onclick="avatar.random()">Random</button>
             </div>
             <div id="avatar"></div>
