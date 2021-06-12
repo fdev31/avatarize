@@ -32,16 +32,18 @@ for root, dirs, files in os.walk('.'):
     all_data['current'] = []
     all_data[root[2:]] = all_data['current']
 
-    all_data['current'].append(getHeader(root[2:]))
+    all_data['current'].append(f'\n<g id="{root[2:]}">')
     for fname in sorted(files):
         digestSVG(
                 fname[:-4],
                 open(os.path.join(root, fname)).read(),
                 )
-    all_data['current'].append('</svg>')
+    all_data['current'].append('</g>')
 
 del all_data['current']
 
+print(getHeader('avatars'))
 names = 'hair_back skincolor tattoos accesories eyes eyebrows clothes facialhair mouths glasses hair_front'.split()
 for name in names:
     print(''.join(all_data[name]))
+print('</svg>')
