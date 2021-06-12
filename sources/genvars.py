@@ -5,15 +5,17 @@ data = {}
 
 OPTIONAL = set(['tattoos', 'glasses', 'facialhairs', 'accesories'])
 
+IGNORED = set([os.path.curdir, os.path.join(os.path.curdir, 'skincolor')])
+
 for root, dirs, files in os.walk(os.path.curdir):
-    if root == os.path.curdir:
+    if root in IGNORED:
         continue
     d = data[root[2:]] = []
     pfx = root[2] + '_'
     for fname in files:
         if fname.endswith('.svg'):
             try:
-                d.append(fname.split('_', 1)[1][:-4])
+                d.append(fname[:-4])
             except IndexError:
                 pass
 
