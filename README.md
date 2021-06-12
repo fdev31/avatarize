@@ -23,6 +23,8 @@ Look at the original: https://codepen.io/pnmo/pen/mdyZXxE
 
 # Usage
 
+Copy the files in `site/avatar*` to your project and start using the API !
+
 
 ## Reuse
 
@@ -40,7 +42,7 @@ Check the demo code <a href="./site/">on the demo page</a>
     return an object describing the current avatar
 
 `asArray()`
-    return an array showing each value
+    return an array showing each INDEX value
 
 `asString()`
     return a string listing each value
@@ -56,4 +58,11 @@ Check the demo code <a href="./site/">on the demo page</a>
 
 `update()`
     update the avatar display
+
+`asCode()`
+    get a code identifying this avatar setup
+
+`fromCode(code)`
+    set the avatar according to some previously fetched avatar setup from `asCode()`
+    
     
