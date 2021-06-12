@@ -42,6 +42,6 @@ for root, dirs, files in os.walk('.'):
 
 del all_data['current']
 
-names = 'hair_back skincolor tattoos accesories eyes eyebrows mouths clothes hair_front facialhair glasses'.split()
+names = 'hair_back skincolor tattoos accesories eyes eyebrows clothes facialhair mouths glasses hair_front'.split()
 for name in names:
     print(''.join(all_data[name]))
