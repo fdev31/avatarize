@@ -3,7 +3,7 @@ import os
 
 data = {}
 
-OPTIONAL = set(['tattoos', 'glasses', 'facialhairs', 'accesories'])
+OPTIONAL = set(['tattoos', 'glasses', 'facialhairs', 'accessories'])
 
 IGNORED = set([os.path.curdir, os.path.join(os.path.curdir, 'skincolor')])
 

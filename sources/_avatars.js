@@ -1,137 +1,128 @@
-function serieMaker(seed) {
-    if (!seed) seed = 42;
-    if (seed < 1000) {
-        seed *= 1000;
-    }
-    r = [];
-    r.push(seed + Math.floor(seed * 0.5) );
-    r.push(Math.floor(seed * 0.5) );
-    let s = Math.floor(Math.sqrt(seed));
-    r.push(s);
-    let strseed = seed.toString();
-    let v = parseInt(strseed.substr(strseed.length/2) + strseed.substr(null, strseed.length/2));
-    let x = parseInt(strseed.charCodeAt(3) + seed + strseed.charCodeAt(0));
-    let z = Math.floor(seed + seed/0.33 + seed*seed);
-    r.push(v);
-    r.push(x);
-    r.push(x+v);
-    r.push(Math.floor(x/2)+v);
-    r.push(x+s);
-    r.push(v+s);
-    r.push(Math.floor(seed/s));
-    r.push(z);
-    r.push(z-s);
-    r.push(z-x);
-    r.push(z+x+s);
-    r.push(z+x+s+v);
-    return r;
+function isInvariant(text) {
+    return (text[text.length-1] == 's' || text == 'facialhair')
 }
 
-function getMagicIndex(array) {
-    return array[Math.floor(Math.random()*array.length)];
+function getMagicIndex(propname, db) {
+    let collectionname = isInvariant(propname) ? propname : (propname + 's');
+    return Math.floor(Math.random()*db[collectionname].length);
 }
 
 class Avatar {
     constructor(domRef) {
         this._ref = domRef;
+        this.db = {skincolors, fabriccolors, haircolors, accessories,
+            clothes , eyebrows , eyes , facialhair , glasses , hairstyles ,
+            mouths , tattoos};
         this.random();
+    }
+    getKeys() {
+        return [ 'skincolor', 'eyes', 'eyebrows', 'mouth', 'hairstyle', 'haircolor', 'facialhair',
+            'clothes', 'glasses', 'glassopacity', 'tattoo', 'accessories', 'fabriccolor'];
     }
     asObject() {
         let r = {};
-        for (let k of Object.keys(this)) {
-            if (k[0] != '_') r[k] = this[k];
-        }
+        for (let k of this.getKeys())
+            r[k] = this.getValue(k);
         return r;
     }
     asArray() {
-        return Object.values(this.asObject())
+        return this.getKeys().map( (k) => this.getIndex(k))
     }
     asString() {
         return this.asArray().join(':');
     }
     fromName(name) {
-        let seed = [];
-        for (let i=0; i<name.length; i++)
-            seed.push(name.charCodeAt(i));
-        seed = parseInt(seed.join(''));
-        let serie = serieMaker(seed);
+        if (name == '') name = 'ouf';
+        let vals = [];
+        let total = 0;
+        let src_idx = 0;
+        for (let k of this.getKeys()) {
+            let v = name.charCodeAt(src_idx);
+            total += v;
+            src_idx++;
+            if (src_idx >= name.length) src_idx = 0;
+            vals.push(v);
+        }
+        for (let i=0; i<vals.length; i++) vals[i] += (total - i);
 
-        this.skincolor        = skins[serie[0]%(skins.length)];
-        this.eyes             = eyes[serie[1]%(eyes.length)];
-        this.eyebrows         = eyebrows[serie[2]%(eyebrows.length)];
-        this.mouth            = mouths[serie[3]%(mouths.length)];
-        this.hairstyle        = hairstyles[serie[4]%(hairstyles.length)];
-        this.haircolor        = haircolors[serie[5]%(haircolors.length)];
-        this.facialhair       = facialhair[serie[6]%(facialhair.length)];
-        this.clothes          = clothes[serie[7]%(clothes.length)];
-        this.glasses          = glasses[serie[9]%(glasses.length)];
-        this.glassopacity     = 0.1*(serie[10]%10);
-        this.tatoos           = tattoos[serie[11]%(tattoos.length)];
-        this.accesories       = accesories[serie[12]%(accesories.length)];
-        this.fabriccolors     = fabriccolors[serie[13]%(fabriccolors.length)];
+        let i=0;
+        for (let k of this.getKeys()) {
+            console.log(k, vals[i]);
+            this[k] = vals[i++];
+        }
         this.update();
     }
+    getIndexValue(attrName) {
+        if (attrName == 'glassopacity') return [this[attrName]%10, (this[attrName]%10)*0.1];
+        let choiceName = isInvariant(attrName) ? attrName : (attrName + 's');
+        let values = this.db[choiceName];
+        let i = this[attrName]%values.length
+        return [i, values[i]];
+    }
+    getIndex(attrName) {
+        return this.getIndexValue(attrName)[0];
+    }
+    getValue(attrName) {
+        return this.getIndexValue(attrName)[1];
+    }
     debug() {
-       console.log('skins',  this.skincolor );
-       console.log('eyes',  this.eyes );
-       console.log('eyebrows',  this.eyebrows );
-       console.log('mouths',  this.mouth );
-       console.log('hairstyles',  this.hairstyle );
-       console.log('haircolors',  this.haircolor );
-       console.log('facialhair',  this.facialhair );
-       console.log('clothes',  this.clothes );
-       console.log('glasses',  this.glasses );
-       console.log('glassOp', this.glassopacity);
-       console.log('tattoos',  this.tatoos );
-       console.log('accesories',  this.accesories );
-       console.log('fabriccolors',  this.fabriccolors );
+        let o = this.asObject();
+        for (let k of Object.keys(o)) {
+            console.log(k, this[k], this.getValue(k));
+        }
     }
     random() {
-        this.skincolor = getMagicIndex(skins);
-        this.eyes = getMagicIndex(eyes);
-        this.eyebrows = getMagicIndex(eyebrows);
-        this.mouth = getMagicIndex(mouths);
-        this.hairstyle = getMagicIndex(hairstyles);
-        this.haircolor = getMagicIndex(haircolors);
-        this.facialhair = getMagicIndex(facialhair);
-        this.clothes = getMagicIndex(clothes);
-        this.glasses = getMagicIndex(glasses);
-        this.glassopacity = Math.random();
-        this.tatoos = getMagicIndex(tattoos);
-        this.accesories = getMagicIndex(accesories);
-        this.fabriccolors = getMagicIndex(fabriccolors);
+        for (let k of this.getKeys())
+            if (k != 'glassopacity')
+                this[k] = getMagicIndex(k, this.db)
+        this.glassopacity = Math.floor(Math.random() * 10);
         this.update();
         return this;
     }
+    asCode() {
+        return parseInt(this.asArray().join('')).toString(36);
+    }
+    fromCode(code) {
+        code = parseInt(code, 36);
+        let keys = this.getKeys();
+        let i =0;
+        for (let c of code.toString()) {
+            console.log(c);
+            this[keys[i]] = parseInt(c);
+            i++;
+        }
+        this.update();
+    }
     update() {
         let o = document.querySelector(this._ref);
-        setAttr(o.querySelectorAll(".skin #body"), "fill","#"+this.skincolor);
+        let d = this.asObject();
+        setAttr(o.querySelectorAll(".skin #body"), "fill",`#${d.skincolor}`);
         hide(o.querySelectorAll("#eyes g"));
-        show(o.querySelectorAll("#eyes g."+this.eyes));
+        show(o.querySelectorAll(`#eyes g.${d.eyes}`));
         hide(o.querySelectorAll("#eyebrows g"));
-        show(o.querySelectorAll("#eyebrows ."+this.eyebrows));
+        show(o.querySelectorAll(`#eyebrows .${d.eyebrows}`));
         hide(o.querySelectorAll("#mouths g"));
-        show(o.querySelectorAll("#mouths g."+this.mouth));
+        show(o.querySelectorAll(`#mouths g.${d.mouth}`));
         hide(o.querySelectorAll("#hair_front g"));
         hide(o.querySelectorAll("#hair_back g"));
-        show(o.querySelectorAll("#hair_front g."+this.hairstyle));
-        show(o.querySelectorAll("#hair_back g."+this.hairstyle));
-        let color = this.haircolor.split('_');
-        setAttr( o.querySelectorAll("#hair_front ."+this.hairstyle+" .tinted"), "fill","#"+color[0]);
-        setAttr( o.querySelectorAll("#hair_back ."+this.hairstyle+" .tinted"), "fill","#"+color[1]);
+        show(o.querySelectorAll(`#hair_front g.${d.hairstyle}`));
+        show(o.querySelectorAll(`#hair_back g.${d.hairstyle}`));
+        let color = d.haircolor.split('_');
+        setAttr( o.querySelectorAll(`#hair_front .${d.hairstyle} .tinted`), "fill","#"+color[0]);
+        setAttr( o.querySelectorAll(`#hair_back .${d.hairstyle} .tinted`), "fill","#"+color[1]);
         setAttr( o.querySelectorAll("#facialhair g .tinted"), "fill","#"+color[2]);
         hide(o.querySelectorAll("#facialhair g"));
-        show(o.querySelectorAll("#facialhair g."+this.facialhair));
+        show(o.querySelectorAll(`#facialhair g.${d.facialhair}`));
         hide(o.querySelectorAll("#clothes g"));
-        show(o.querySelectorAll("#clothes g."+this.clothes));
+        show(o.querySelectorAll(`#clothes g.${d.clothes}`));
         hide(o.querySelectorAll("#glasses g"));
-        show(o.querySelectorAll("#glasses g."+this.glasses));
-        setAttr(o.querySelectorAll(".glass"), "fill-opacity",this.glassopacity);
-        setAttr(o.querySelectorAll("#clothes g .tinted", "fill","#"+this.fabriccolors));
+        show(o.querySelectorAll(`#glasses g.${d.glasses}`));
+        setAttr(o.querySelectorAll(".glass"), "fill-opacity", d.glassopacity);
+        setAttr(o.querySelectorAll("#clothes g .tinted", "fill",`#${d.fabriccolors}`));
         hide(o.querySelectorAll("#tattoos g"));
-        show(o.querySelectorAll("#tattoos g."+this.tatoos));
-        hide(o.querySelectorAll("#accesories g"));
-        show(o.querySelectorAll("#accesories g."+this.accessories));
+        show(o.querySelectorAll("#tattoos g."+d.tatoos));
+        hide(o.querySelectorAll("#accessories g"));
+        show(o.querySelectorAll("#accessories g."+d.accessories));
     }
 }
 
