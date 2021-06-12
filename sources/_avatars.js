@@ -64,13 +64,11 @@ class Avatar {
         this.haircolor        = haircolors[serie[5]%(haircolors.length)];
         this.facialhair       = facialhair[serie[6]%(facialhair.length)];
         this.clothes          = clothes[serie[7]%(clothes.length)];
-        this.backgroundcolors = backgroundcolors[serie[8]%(backgroundcolors.length)];
         this.glasses          = glasses[serie[9]%(glasses.length)];
         this.glassopacity     = 0.1*(serie[10]%10);
         this.tatoos           = tattoos[serie[11]%(tattoos.length)];
         this.accesories       = accesories[serie[12]%(accesories.length)];
         this.fabriccolors     = fabriccolors[serie[13]%(fabriccolors.length)];
-        this.backgroundcolors = backgroundcolors[serie[14]%(backgroundcolors.length)];
         this.update();
     }
     debug() {
@@ -82,13 +80,11 @@ class Avatar {
        console.log('haircolors',  this.haircolor );
        console.log('facialhair',  this.facialhair );
        console.log('clothes',  this.clothes );
-       console.log('backgroundcolors',  this.backgroundcolors );
        console.log('glasses',  this.glasses );
        console.log('glassOp', this.glassopacity);
        console.log('tattoos',  this.tatoos );
        console.log('accesories',  this.accesories );
        console.log('fabriccolors',  this.fabriccolors );
-       console.log('backgroundcolors',  this.backgroundcolors );
     }
     random() {
         this.skincolor = getMagicIndex(skins);
@@ -99,13 +95,11 @@ class Avatar {
         this.haircolor = getMagicIndex(haircolors);
         this.facialhair = getMagicIndex(facialhair);
         this.clothes = getMagicIndex(clothes);
-        this.backgroundcolors = getMagicIndex(backgroundcolors);
         this.glasses = getMagicIndex(glasses);
         this.glassopacity = Math.random();
         this.tatoos = getMagicIndex(tattoos);
         this.accesories = getMagicIndex(accesories);
         this.fabriccolors = getMagicIndex(fabriccolors);
-        this.backgroundcolors = getMagicIndex(backgroundcolors);
         this.update();
         return this;
     }
@@ -134,7 +128,6 @@ class Avatar {
         show(o.querySelectorAll("#glasses .g_"+this.glasses));
         setAttr(o.querySelectorAll(".glass"), "fill-opacity",this.glassopacity);
         setAttr(o.querySelectorAll("#clothes g .tinted", "fill","#"+this.fabriccolors));
-        setAttr(o.querySelectorAll("#background"), "fill","#"+this.backgroundcolors);
         hide(o.querySelectorAll("#tattoos g"));
         show(o.querySelectorAll("#tattoos .t_"+this.tatoos));
         hide(o.querySelectorAll("#accesories g"));
