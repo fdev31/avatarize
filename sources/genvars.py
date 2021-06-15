@@ -3,7 +3,7 @@ import os
 
 data = {}
 
-OPTIONAL = set(['tattoos', 'glasses', 'facialhairs', 'accessories'])
+OPTIONAL = set(['tattoos', 'glasses', 'facialhair', 'accessories'])
 
 IGNORED = set([os.path.curdir, os.path.join(os.path.curdir, 'skincolor')])
 
@@ -19,7 +19,7 @@ for root, dirs, files in os.walk(os.path.curdir):
             except IndexError:
                 pass
 
-data['hairstyles'] = list(set(data['hair_front'] + data['hair_back'])) + ['none']
+data['hairstyles'] = list(set(data['hair_front'] + data['hair_back'])) + (['none'] * (2*len(data['hair_back'])))
 del data['hair_front']
 del data['hair_back']
 
