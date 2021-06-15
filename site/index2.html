@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<head>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<html>
+    <meta charset="utf-8">
+    <head title="Avatarize!">
+    </head>
+    <style>
+svg {
+    top:0;
+    left:0;
+    width:360px;
+    height:360px;
+}
+#avatar {
+    position:relative;
+    margin:auto;
+    width:360px;
+    height:460px;
+}
+
+.skins,.eyes,.eyebrows,.mouths,.hairstyles,.haircolors,.facialhairs,.clothes,.fabriccolors,.backgroundcolors,.glasses,.glassopacity,.tattoos,.accessories {
+    flex: 0 0 auto;
+    top:0;
+    width:53px;
+    height:53px;
+    margin:5px;
+    border:1px solid #707070;
+    cursor:pointer;
+    border-radius:10px;
+    background-color:#ffdbb4;
+}
+.eyes,.eyebrows,.mouths,.hairstyles,.facialhairs,.clothes,.glasses,.tattoos,.accesories {
+    background-image:url(https://i.imgur.com/q0DdlUI.png);
+}
+.glassopacity {
+    text-align:center;
+    font-size:21px;
+    font-weight:bold;
+    height:43px;
+    padding-top:10px;
+    color:#707070;
+}
+    </style>
+    <script src="avatars.js" charset="utf-8"></script>
+    <script>
+
+function setAttr(e, name, val) {
+    e.forEach( x => x.setAttribute(name, val) );
+}
+function show(e) {
+    e.forEach( x => x.style.visibility = "visible" );
+}
+function hide(e) {
+    e.forEach( x => x.style.visibility = "hidden" );
+}
+let avatarId = 'myavatar'
+
+let avatarData;
+function start() {
+    fetch('avatars.svg')
+        .then(async (q) => {
+            avatarData = (await q.text()).trim();
+           let avatarComponent = {
+                mounted() {
+                    setTimeout( () => {
+                        this.$el.id = this.domId;
+                        this.obj = new Avatar('#' + this.domId);
+                        for (let k of this.obj.getKeys()) {
+                            this[k] = this.obj[k];
+
+                        }
+                    }, 5);
+                },
+                data() {
+                    return {
+                        'domId': '',
+                        'obj': '',
+                        'skincolor':'',
+                        'eyes': '',
+                        'eyebrows': '',
+                        'mouth': '',
+                        'hairstyle': '',
+                        'haircolor': '',
+                        'facialhair': '',
+                        'clothes': '',
+                        'glasses': '',
+                        'glassopacity': '',
+                        'tattoo': '',
+                        'accessories': '',
+                        'fabriccolor': ''
+                    };
+                },
+                created() {
+                    this.domId = this.$attrs.useid || "av-" + (Math.floor(Math.random()*999999)
+ ).toString(36);
+                },
+                template: avatarData
+            };
+            app = Vue.createApp({
+                data() {return {name : 'XXX',
+                    'skincolor': '',
+                    'eyes': '',
+                    'eyebrows': '',
+                    'mouth': '',
+                    'hairstyle': '',
+                    'haircolor': '',
+                    'facialhair': '',
+                    'clothes': '',
+                    'glasses': '',
+                    'glassopacity': '',
+                    'tattoo': '',
+                    'accessories': '',
+                    'fabriccolor': ''
+            }},
+                components: {
+                    'avatar': avatarComponent
+                },
+                watch: {
+                    name(val) {
+                        this.$refs.firstavatar.obj.fromCode(val)
+                    },
+                    skincolor(val){
+                        this.$refs.firstavatar.obj.skincolor = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    eyes(val) {
+                        this.$refs.firstavatar.obj.eyes = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    eyebrows(val) {
+                        this.$refs.firstavatar.obj.eyebrows = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    mouth(val) {
+                        this.$refs.firstavatar.obj.mouth = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    hairstyle(val) {
+                        this.$refs.firstavatar.obj.hairstyle = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    haircolor(val) {
+                        this.$refs.firstavatar.obj.haircolor = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    facialhair(val) {
+                        this.$refs.firstavatar.obj.facialhair = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    clothes(val) {
+                        this.$refs.firstavatar.obj.clothes = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    glasses(val) {
+                        this.$refs.firstavatar.obj.glasses = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    glassopacity(val) {
+                        this.$refs.firstavatar.obj.glassopacity = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    tattoo(val) {
+                        this.$refs.firstavatar.obj.tattoo = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    accessories(val) {
+                        this.$refs.firstavatar.obj.accessories = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                    fabriccolor(val) {
+                        this.$refs.firstavatar.obj.fabriccolor = val;
+                        this.$refs.firstavatar.obj.update();
+                    },
+                }
+            });
+            root = app.mount('#mainApp');
+        }
+    )
+}
+    </script>
+        <body onload="start()">
+            <h1>Avatarize!</h1>
+            <div id="mainApp">
+                <input size=50 max-size=50 type="text" v-model="name" placeholder="enter something here" />
+                <button onclick="root.$refs.firstavatar.obj.random()">Random</button>
+                                        <br/>
+                                        <div class="settings" style="float: right;">
+ skin:                  <input type="range" min="0" max="20" v-model="skincolor" /> <br/>
+ eyes:                  <input type="range" min="0" max="16" v-model="eyes" /><br/>
+ eyebrows:                  <input type="range" min="0" max="16" v-model="eyebrows" /><br/>
+ mouth:                  <input type="range" min="0" max="16" v-model="mouth" /><br/>
+ hairstyle:                  <input type="range" min="0" max="16" v-model="hairstyle" /><!-- BUG --><br/>
+ haircolor:                  <input type="range" min="0" max="16" v-model="haircolor" /><br/>
+ facialhair:                  <input type="range" min="0" max="16" v-model="facialhair" /><br/>
+ clothes:                  <input type="range" min="0" max="16" v-model="clothes" /><br/>
+ glasses:                  <input type="range" min="0" max="16" v-model="glasses" /><br/>
+ glassopacity:                  <input type="range" min="0" max="9" v-model="glassopacity" /><br/>
+ tattoo:                  <input type="range" min="0" max="16" v-model="tattoo" /> <!-- BUG --><br/>
+ accessories:                  <input type="range" min="0" max="16" v-model="accessories" /><br/>
+ fabriccolor:                  <input type="range" min="0" max="16" v-model="fabriccolor" /> <!-- BUG --><br/>
+</div>
+                <div id="avatarZone"> 
+                    <avatar ref="firstavatar"></avatar>
+                    <avatar></avatar>
+                    <avatar></avatar>
+                    <avatar></avatar>
+                </div>
+            </div>
+        </body>
+</html>
