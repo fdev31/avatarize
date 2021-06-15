@@ -16,7 +16,8 @@ def extractContent(content):
     return ''
 
 def digestSVG(name, data):
-    all_data['current'].append('<g class="%s">'%name)
+    visibility = "visible" if name == "skin" else "hidden"
+    all_data['current'].append(f'<g class="%s" style="visibility: {visibility};">'%name)
     soup = BeautifulSoup(data, 'html.parser')
     for i, svg in enumerate(soup.find('svg')): # expect 1
         try:
@@ -43,7 +44,7 @@ for root, dirs, files in os.walk('.'):
 del all_data['current']
 
 print(getHeader('avatars'))
-names = 'hair_back skincolor tattoos eyes eyebrows clothes mouths glasses hair_front facialhair accessories'.split()
+names = 'hair_back skincolor tattoos eyes eyebrows clothes mouths hair_front facialhair accessories glasses'.split()
 for name in names:
     print(''.join(all_data[name]))
 print('</svg>')
