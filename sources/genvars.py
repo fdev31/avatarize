@@ -19,7 +19,7 @@ for root, dirs, files in os.walk(os.path.curdir):
             except IndexError:
                 pass
 
-data['hairstyles'] = list(set(data['hair_front'] + data['hair_back']))
+data['hairstyles'] = list(set(data['hair_front'] + data['hair_back'])) + ['none']
 del data['hair_front']
 del data['hair_back']
 
